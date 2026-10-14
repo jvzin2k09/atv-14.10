@@ -6,25 +6,22 @@ const cors = require('cors');
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 
-// Configurar CORS
 app.use(cors({
     origin: '*',
     credentials: true
 }));
 
-// Servir arquivos estáticos do frontend
-app.use(express.static(path.join(__dirname, '../front-api')));
+const jogadoresRouter = require('./rotas/jogadores');
+app.use('/api/jogadores', jogadoresRouter);
 
-// Rotas da API
-const usersRouter = require('./routes/users');
-app.use('/api/users', usersRouter);
+const golsRouter = require('./rotas/gols');
+app.use('/api/gols', golsRouter);
 
-const corredoresRouter = require('./routes/corredores');
-app.use('/api/corredores', corredoresRouter);
+const assistenciaRouter = require('./rotas/assistencia');
+app.use('/api/assistencia', assistenciaRouter);
 
-// Rota raiz - servir login
 app.get('/', (req, res) => {
-    res.sendFile(path.join(__dirname, '../front-api', 'login.html'));
+    res.send('API de futebol rodando!');
 });
 
 module.exports = app;
