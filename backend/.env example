@@ -1,11 +1,2 @@
-# Servidor
-PORT=3000
-
-# Banco de dados MySQL
-DB_HOST=localhost
-DB_PORT=3306
-DB_USER=root
-DB_PASSWORD=sua_senha
-DB_NAME=nome_do_banco
-
+DATABASE_URL="mysql://avnadmin:SUA_SENHA@mysql-37bdb7a1-aluno-0c5e.c.aivencloud.com:21670/futebol_db?ssl-mode=REQUIRED"
 
