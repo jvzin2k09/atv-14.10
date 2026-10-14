@@ -1,0 +1,175 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Futebol API · Jogadores</title>
+    <meta name="description" content="Painel simples para gerenciar jogadores de futebol e testar as rotas da API.">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+    <header class="topbar">
+        <h1 class="brand">⚽ Futebol API</h1>
+        <button id="btnStatus" class="status" title="GET / — verificar API">
+            <span class="status__dot"></span>
+            <span id="statusText">Verificando...</span>
+        </button>
+    </header>
+
+    <main class="container">
+
+        <div class="layout">
+            <!-- Jogadores: GET / PUT / DELETE -->
+            <section class="card" id="playersPanel" aria-labelledby="playersTitle">
+                <div class="card__head">
+                    <div>
+                        <h2 id="playersTitle">Jogadores <span class="count" id="playersCount"></span></h2>
+                        <p class="route">GET /api/jogadores</p>
+                    </div>
+                    <div class="tools">
+                        <input id="searchInput" class="input" type="search" placeholder="Buscar...">
+                        <button id="btnRefresh" class="btn btn--ghost" title="Recarregar lista">Atualizar</button>
+                    </div>
+                </div>
+
+                <div class="table-wrap">
+                    <table class="table">
+                        <thead>
+                            <tr>
+                                <th>Nome</th>
+                                <th>Posição</th>
+                                <th>Time</th>
+                                <th class="num">Idade</th>
+                                <th class="num">Gols</th>
+                                <th class="num">Assist.</th>
+                                <th></th>
+                            </tr>
+                        </thead>
+                        <tbody id="playersBody"></tbody>
+                    </table>
+                </div>
+            </section>
+
+            <!-- Formulário: POST / PUT -->
+            <aside class="card form-card" id="formPanel" aria-labelledby="formTitle">
+                <div class="card__head card__head--stack">
+                    <h2 id="formTitle">Novo jogador</h2>
+                    <p class="route" id="formRoute">POST /api/jogadores</p>
+                </div>
+
+                <form id="playerForm" autocomplete="off" novalidate>
+                    <div class="field field--full">
+                        <label for="fNome">Nome *</label>
+                        <input id="fNome" class="input" type="text" required>
+                    </div>
+                    <div class="field">
+                        <label for="fIdade">Idade *</label>
+                        <input id="fIdade" class="input" type="number" min="14" max="60" required>
+                    </div>
+                    <div class="field">
+                        <label for="fPosicao">Posição *</label>
+                        <select id="fPosicao" class="input" required>
+                            <option value="">—</option>
+                            <option>Goleiro</option>
+                            <option>Zagueiro</option>
+                            <option>Lateral</option>
+                            <option>Meio-campo</option>
+                            <option>Atacante</option>
+                        </select>
+                    </div>
+                    <div class="field">
+                        <label for="fCamisa">Camisa</label>
+                        <input id="fCamisa" class="input" type="number" min="1" max="99">
+                    </div>
+                    <div class="field">
+                        <label for="fNacionalidade">Nacionalidade</label>
+                        <input id="fNacionalidade" class="input" type="text">
+                    </div>
+                    <div class="field">
+                        <label for="fGols">Gols</label>
+                        <input id="fGols" class="input" type="number" min="0" value="0">
+                    </div>
+                    <div class="field">
+                        <label for="fAssist">Assistências</label>
+                        <input id="fAssist" class="input" type="number" min="0" value="0">
+                    </div>
+                    <div class="field field--full">
+                        <label for="fTime">Time</label>
+                        <select id="fTime" class="input">
+                            <option value="">Sem time</option>
+                            <option value="1">Flamengo</option>
+                            <option value="2">Palmeiras</option>
+                            <option value="3">Real Madrid</option>
+                            <option value="4">Inter Miami</option>
+                        </select>
+                    </div>
+
+                    <div class="form__actions">
+                        <button type="button" id="btnCancelEdit" class="btn btn--ghost hidden">Cancelar</button>
+                        <button type="button" id="btnFillDemo" class="btn btn--ghost" title="Preencher com dados de exemplo">Exemplo</button>
+                        <button type="submit" id="btnSubmit" class="btn btn--primary">Cadastrar</button>
+                    </div>
+                </form>
+            </aside>
+        </div>
+
+        <!-- Rankings -->
+        <div class="rankings">
+            <section class="card" id="golsPanel" aria-labelledby="golsTitle">
+                <div class="card__head">
+                    <div>
+                        <h2 id="golsTitle">Artilharia</h2>
+                        <p class="route">GET /api/gols</p>
+                    </div>
+                    <button id="btnLoadGols" class="btn btn--ghost">Atualizar</button>
+                </div>
+                <ol id="golsList" class="ranking"></ol>
+            </section>
+
+            <section class="card" id="assistPanel" aria-labelledby="assistTitle">
+                <div class="card__head">
+                    <div>
+                        <h2 id="assistTitle">Assistências</h2>
+                        <p class="route">GET /api/assistencia</p>
+                    </div>
+                    <button id="btnLoadAssist" class="btn btn--ghost">Atualizar</button>
+                </div>
+                <ol id="assistList" class="ranking"></ol>
+            </section>
+        </div>
+    </main>
+
+    <!-- Console de requisições -->
+    <section class="console" id="console" aria-label="Console de requisições">
+        <header class="console__head">
+            <button id="btnToggleConsole" class="console__toggle">
+                Requisições <span class="count" id="consoleCount">0</span>
+            </button>
+            <button id="btnClearConsole" class="link">Limpar</button>
+        </header>
+        <div class="console__body" id="consoleBody">
+            <p class="console__empty">Nenhuma requisição ainda.</p>
+        </div>
+    </section>
+
+    <!-- Modal de confirmação -->
+    <div class="modal hidden" id="modal" role="dialog" aria-modal="true" aria-labelledby="modalTitle">
+        <div class="modal__card">
+            <h3 id="modalTitle">Remover jogador?</h3>
+            <p id="modalText"></p>
+            <div class="modal__actions">
+                <button id="modalCancel" class="btn btn--ghost">Cancelar</button>
+                <button id="modalConfirm" class="btn btn--danger">Remover</button>
+            </div>
+        </div>
+    </div>
+
+    <div class="toasts" id="toasts" aria-live="polite"></div>
+
+    <script src="script.js"></script>
+</body>
+</html>
