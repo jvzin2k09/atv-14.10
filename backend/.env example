@@ -1,0 +1,13 @@
+# Servidor
+PORT=3000
+
+# Banco de dados MySQL
+DB_HOST=localhost
+DB_PORT=3306
+DB_USER=root
+DB_PASSWORD=sua_senha
+DB_NAME=nome_do_banco
+
+# JWT
+JWT_SECRET=uma_chave_bem_grande_e_aleatoria
+JWT_EXPIRES_IN=1d
